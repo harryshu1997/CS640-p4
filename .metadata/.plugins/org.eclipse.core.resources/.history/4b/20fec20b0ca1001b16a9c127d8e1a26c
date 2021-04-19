@@ -1,0 +1,16 @@
+package p4;
+
+public class TCPacket {
+	int sequence;
+	int acknowledge;
+	long timeStamp;
+	int length;
+	boolean SYN;
+	boolean FIN;
+	boolean ACK;
+	short checksum;
+	
+	
+	
+	
+}

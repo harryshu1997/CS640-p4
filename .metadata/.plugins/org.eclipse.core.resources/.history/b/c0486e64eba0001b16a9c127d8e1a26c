@@ -5,7 +5,7 @@ JC = javac
 	$(JC) $(JFLAGS) $*.java
 
 CLASSES = \
-	TCPend.java \
+	Iperfer.java \
 	Client.java \
 	Server.java 
         
