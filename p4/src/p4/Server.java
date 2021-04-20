@@ -4,6 +4,10 @@ import java.io.*;
 import java.net.*;
 import java.util.Collections;
 
+/*
+ * not used for now
+ */
+/*
 public class Server {
 	public int[] connect(int portNumber) throws IOException {
 		long startTime = 0;
@@ -32,3 +36,4 @@ public class Server {
         return new int[]{size, duration};
     }
 }
+*/

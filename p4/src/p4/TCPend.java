@@ -2,6 +2,7 @@ package p4;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -15,80 +16,108 @@ public class TCPend{
 		}
 		
 		//-p options for specifying port number
-		if(!args[0].equals("TCPend")) {
-			System.err.println("Correct Format 0: java TCPend -p <port> -s <remote IP> -a <remote port> –f <file name> -m <mtu> -c <sws>");
+		if(!args[1].equals("TCPend")) {
+			System.err.println("Correct Format 1: java TCPend -p <port> -s <remote IP> -a <remote port> –f <file name> -m <mtu> -c <sws>");
 			System.exit(1);
 		}
 		
 		//-p options for specifying port number
-		if(!args[1].equals("-p")) {
-			System.err.println("Correct Format 1: java TCPend -p <port> -s <remote IP> -a <remote port> –f <file name> -m <mtu> -c <sws>");
+		if(!args[2].equals("-p")) {
+			System.err.println("Correct Format 2: java TCPend -p <port> -s <remote IP> -a <remote port> –f <file name> -m <mtu> -c <sws>");
 			System.exit(1);
 		}
 		
 		//record port number
 		int portNumber = 0;
 		try {
-			portNumber = Integer.parseInt(args[2]);
+			portNumber = Integer.parseInt(args[3]);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		//check whether it is sender or receiver
-		String indicator = args[3];
+		String indicator = args[4];
 		if(indicator.equals("-s")) { //if it is a sender
 			
-			String remoteIP = args[4];
+			String remoteIP = args[5];
 			
 			
-			if(!args[5].equals("-a")) {
-				System.err.println("Correct Format 5: java TCPend -p <port> -s <remote IP> -a <remote port> –f <file name> -m <mtu> -c <sws>");
+			if(!args[6].equals("-a")) {
+				System.err.println("Correct Format 6: java TCPend -p <port> -s <remote IP> -a <remote port> –f <file name> -m <mtu> -c <sws>");
 				System.exit(1);
 			}
 			
 			int remotePort = 0;
 			try {
-				remotePort = Integer.parseInt(args[6]);
+				remotePort = Integer.parseInt(args[7]);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
 			
-			if(!args[7].equals("-f")) {
-				System.err.println("Correct Format 7: java TCPend -p <port> -s <remote IP> -a <remote port> –f <file name> -m <mtu> -c <sws>");
+			
+			if(!args[8].equals("-f")) {
+				System.err.println("Correct Format 8: java TCPend -p <port> -s <remote IP> -a <remote port> –f <file name> -m <mtu> -c <sws>");
 				System.exit(1);
 			}
 			
-			String filename = args[8];
+			String filename = args[9];
 			
-			if(!args[9].equals("-m")) {
-				System.err.println("Correct Format 8: java TCPend -p <port> -s <remote IP> -a <remote port> –f <file name> -m <mtu> -c <sws>");
+			if(!args[10].equals("-m")) {
+				System.err.println("Correct Format 10: java TCPend -p <port> -s <remote IP> -a <remote port> –f <file name> -m <mtu> -c <sws>");
 				System.exit(1);
 			}
 			
 			int mtu = 0;
 			try {
-				mtu = Integer.parseInt(args[10]);
+				mtu = Integer.parseInt(args[11]);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
 			
-			if(!args[11].equals("-c")) {
-				System.err.println("Correct Format 11: java TCPend -p <port> -s <remote IP> -a <remote port> –f <file name> -m <mtu> -c <sws>");
+			if(!args[12].equals("-c")) {
+				System.err.println("Correct Format 12: java TCPend -p <port> -s <remote IP> -a <remote port> –f <file name> -m <mtu> -c <sws>");
 				System.exit(1);
 			}
 			
 			int sws = 0;
 			try {
-				sws = Integer.parseInt(args[12]);
+				sws = Integer.parseInt(args[13]);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 			//do the TCP transporting (sender side)
 			//convert file to byte stream
+			/*
+			 * step1: send all info to TCPSender
+			 * step2: slice the file in pieces in sender and buffer them
+			 * step3; create UDP instance and invoke the function udp.sent() to send the datagram (remember to serialize and deserialize)
+			 * 
+			 * not yet implement: sws mtu ......
+			 */
 			byte[] bytes = Files.readAllBytes(Paths.get(filename));
 			TCPSender sender = new TCPSender(portNumber, remotePort, remoteIP, bytes, mtu, sws);
 			
+			
+			//for testing checksum
+			int sequence =10, ack=2,length=0;
+			short checksum=8;
+			boolean S=true, F=true,A=true;
+			long timestamp=100000;
+			byte[] testData = Files.readAllBytes(Paths.get("/Users/hmac/Desktop/p4/p4/src/p4/test.txt"));
+			TCPacket packet = new TCPacket(sequence,ack,timestamp,length,S,F,A,checksum,testData,0);
+			byte[] serial = packet.serialize();
+			
+			
+			TCPacket deserial = packet.deserialize(serial, 0, serial.length);
+			
+			System.out.println(packet.equals(deserial));
+			System.out.println("length " + deserial.length + " seq " + deserial.sequence + " ack " + deserial.acknowledge + " checksum " + deserial.checksum + " time " + deserial.timeStamp);
+			String s = new String(deserial.getData());
+			String ss = new String(testData);
+			
+			System.out.println("datas " + s + " datass " + ss); //checked is true, all correct
+			System.out.println(deserial.toString());
 			
 			
 			
@@ -97,31 +126,38 @@ public class TCPend{
 		}else if(indicator.equals("-m")) { // if it is a receiver
 			int mtu = 0;
 			try {
-				mtu = Integer.parseInt(args[4]);
+				mtu = Integer.parseInt(args[5]);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
 			
-			if(!args[5].equals("-c")) {
-				System.err.println("Correct Format 55: java TCPend -p <port> -m <mtu> -c <sws> -f <file name>");
+			if(!args[6].equals("-c")) {
+				System.err.println("Correct Format 66: java TCPend -p <port> -m <mtu> -c <sws> -f <file name>");
 				System.exit(1);
 			}
 			
 			int sws = 0;
 			try {
-				sws = Integer.parseInt(args[6]);
+				sws = Integer.parseInt(args[7]);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
 			
-			if(!args[7].equals("-f")) {
-				System.err.println("Correct Format 77: java TCPend -p <port> -m <mtu> -c <sws> -f <file name>");
+			if(!args[8].equals("-f")) {
+				System.err.println("Correct Format 88: java TCPend -p <port> -m <mtu> -c <sws> -f <file name>");
 				System.exit(1);
 			}
 			
-			String filename = args[8];
+			String filename = args[9];
 			
 			//do the TCP transporting (Receiving side)
+			//create a UDP for receiving first then get the data
+			/*
+			 * step1: create a TCPReceiver and send all the info
+			 * step2: buffer the packets while receiving data
+			 * remember to implements the sws mtu etc
+			 */
+			
 			
 			
 		}else {

@@ -15,33 +15,47 @@ public class TCPacket {
 	boolean FIN;
 	boolean ACK;
 	short checksum;
-	UDP udp;
+	UDP udp; //not used for now
 	byte[] data;
 	int offset;
 	
-	public TCPacket(int sequence, int acknowledge, long timeStamp, int length, boolean sYN, boolean fIN, boolean aCK,
-			short checksum, byte[] data, int offset) {
-		super();
-		this.sequence = sequence;
-		this.acknowledge = acknowledge;
-		this.timeStamp = timeStamp;
-		this.length = length;
-		SYN = sYN;
-		FIN = fIN;
-		ACK = aCK;
-		this.checksum = checksum;
+	public int getSourceport() {
+		return sourceport;
+	}
+
+	public void setSourceport(int sourceport) {
+		this.sourceport = sourceport;
+	}
+
+	public int getDestport() {
+		return destport;
+	}
+
+	public void setDestport(int destport) {
+		this.destport = destport;
+	}
+
+	public byte[] getData() {
+		return data;
+	}
+
+	public void setData(byte[] data) {
 		this.data = data;
+	}
+
+	public int getOffset() {
+		return offset;
+	}
+
+	public void setOffset(int offset) {
 		this.offset = offset;
 	}
-
-	
-
-	public UDP getUdp() {
-		return udp;
-	}
-	public void setUdp(UDP udp) {
-		this.udp = udp;
-	}
+//	public UDP getUdp() {
+//		return udp;
+//	}
+//	public void setUdp(UDP udp) {
+//		this.udp = udp;
+//	}
 	public int getSequence() {
 		return sequence;
 	}
@@ -91,6 +105,23 @@ public class TCPacket {
 		this.checksum = checksum;
 	}
 	
+	public TCPacket() {
+		
+	}
+	
+	public TCPacket(int sequence, int acknowledge, long timeStamp, int length, boolean sYN, boolean fIN, boolean aCK,
+			short checksum, byte[] data, int offset) {
+		this.sequence = sequence;
+		this.acknowledge = acknowledge;
+		this.timeStamp = timeStamp;
+		this.length = length;
+		SYN = sYN;
+		FIN = fIN;
+		ACK = aCK;
+		this.checksum = checksum;
+		this.data = data;
+		this.offset = offset;
+	}
 	
 	public byte[] serialize() {
 		int pktlength;
@@ -144,7 +175,7 @@ public class TCPacket {
                 accumulation += 0xffff & bb.getShort();
             }
             // pad to an even number of shorts
-            if (length % 2 > 0) {
+            if (pktlength % 2 > 0) {
                 accumulation += (bb.get() & 0xff) << 8;
             }
 
@@ -158,11 +189,14 @@ public class TCPacket {
 	}
 	
 	public TCPacket deserialize(byte[] bytes, int offset, int pktlength) {
-		ByteBuffer bb = ByteBuffer.wrap(data, offset, pktlength);
+		//System.out.println("data length: " + bytes.length + " pktlength: " + pktlength + " offset: " + offset);
+		ByteBuffer bb = ByteBuffer.wrap(bytes, offset, pktlength);
+
 		this.sequence = bb.getInt();
 		this.acknowledge = bb.getInt();
 		this.timeStamp = bb.getLong();
 		int length = bb.getInt();
+		this.length = length >>> 3;
 		if(((length >>> 2) & 1) != 0) {
 			this.SYN = true;
 		}else {
@@ -181,11 +215,40 @@ public class TCPacket {
 		bb.getShort(); // all zeros before checksum
 		this.checksum = bb.getShort();
 		byte[] b = new byte[bb.remaining()];
+		bb.get(b);
 		this.data = b;
 		return this;
 	}
 	
+	@Override
+	public boolean equals(Object obj) { //not working don't know why 
+		if(this == obj) {
+			return true;
+		}
+		if(!(obj instanceof TCPacket)) {
+			return false;
+		}
+		TCPacket other = (TCPacket)obj;
+		//System.out.println(length + " || " + other.length);
+		return (sequence == other.sequence) &&
+				(acknowledge == other.acknowledge) &&
+				(timeStamp == other.timeStamp) &&
+				(length == other.length) &&
+				(SYN == other.SYN) &&
+				(FIN == other.FIN) &&
+				(ACK == other.ACK) &&
+				(checksum == other.checksum); //do not check carried data yet 
+				
+	}
 	
+	@Override
+	public String toString() {
+		String res = "";
+		res = "\nThe following is the packet info: \n" + "\tsequence: " + this.sequence + " acknowledge: " + this.acknowledge +
+				" timeStamp: " + this.timeStamp + " length: " + this.length + " SYN " + this.SYN + " FIN " + this.FIN +
+				" ACK " + this.ACK + " checksum: " + this.checksum + " \n\tdata: " + new String(this.data);
+		return res;
+	}
 	
 	
 	
@@ -195,8 +258,8 @@ public class TCPacket {
 	}
 	
 	 public static int[] long2doubleInt(long a) {
-		 	int a1 = (int) (a & 0x0000ffff); //低32位
-			int a2 = (int) (a >> 32); //高32位
+		 	int a1 = (int)(a>>32); //high32
+			int a2 = (int) a; //low32
 	        return new int[] { a1, a2 };
 	    }
 	 

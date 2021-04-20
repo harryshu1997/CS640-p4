@@ -1,7 +1,11 @@
 package p4;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 public class UDP {
@@ -87,6 +91,26 @@ public class UDP {
 	}
 	
 	
+	public void sent() throws IOException {
+		// Step 1:Create the socket object for
+        // carrying the data.
+        DatagramSocket ds = new DatagramSocket();
+  
+        InetAddress ip = InetAddress.getByName(this.destAddress);
+     
+        // Step 2 : Create the datagramPacket for sending
+        // the data.
+        DatagramPacket DpSend = new DatagramPacket(this.databuf, this.databuf.length, ip, this.destPort);
+     
+        // Step 3 : invoke the send call to actually send
+        // the data.
+        ds.send(DpSend);
+	}
+	
+	
+	
+	
+	/*
 	public byte[] serialize() {
 		this.length = 16 + ((this.databuf == null)? 0: this.databuf.length);
 		byte[] data = new byte[this.length];
@@ -140,9 +164,9 @@ public class UDP {
 		return this;
 	}
 	
+	*/
 	
-	public void sent() {
-	}
+	
 }
 
 

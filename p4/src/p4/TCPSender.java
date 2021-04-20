@@ -39,7 +39,6 @@ public class TCPSender {
 			this.sws = sws;
 		}
 		public TCPSender(int currentPort, int remotePort, String remoteIP, byte[] data, int mtu, int sws) {
-			super();
 			this.currentPort = currentPort;
 			this.remotePort = remotePort;
 			this.remoteIP = remoteIP;
@@ -49,7 +48,25 @@ public class TCPSender {
 		}
 		
 		public void sent() {
+			//slice the file to byte[] and then send it to UDP 
+			// invoke UDP.sent() to send the data
+			
+			
+			
 			
 		}
 		
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -3,9 +3,16 @@ package p4;
 import java.io.*;
 import java.net.*;
 import java.util.Collections;
-
+/*
+ * not used for now
+ */
+/*
 public class Client {
-	private static String data = String.join("", Collections.nCopies(1000, "0"));
+	private String data;
+	
+	
+	
+	
 	public int connect(String hostName, int portNumber, int time) throws IOException {
 		int size = 0;
         try (
@@ -29,3 +36,4 @@ public class Client {
         return size;
     }
 }
+*/
