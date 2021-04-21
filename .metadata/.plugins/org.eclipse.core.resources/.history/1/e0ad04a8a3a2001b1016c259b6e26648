@@ -107,14 +107,15 @@ public class TCPSender {
 			TCPacket dePacket = aPacket.deserialize(UDPacket, 0, Math.min(UDPacket.length, mtu));
 			UDP udp = new UDP(UDPacket,currentPort,dePacket.getChecksum(),dePacket.getLength(),remotePort, remoteIP);
 			udp.sent();
-			
-			
 			//example output: snd 34.335 S - - - 0 0 0
 			String s = dePacket.isSYN()? "S" : "-";
             String a = dePacket.isACK()? "A" : "-";
             String f = dePacket.isFIN()? "F" : "-";
             String d = dePacket.getData().length > 1? "D" : "-";
-			System.out.println("snd " + timestamp + " " + s + a + f + d + dePacket.getSequence() + dePacket.getLength() + dePacket.getAcknowledge());
+			
+			
+			System.out.println("snd " + timestamp + " " + )
+			
 			
 			
 		}

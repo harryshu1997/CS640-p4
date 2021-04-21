@@ -77,7 +77,7 @@ public class TCPReceiver {
             String s = packet.isSYN()? "S" : "-";
             String a = packet.isACK()? "A" : "-";
             String f = packet.isFIN()? "F" : "-";
-            String d = packet.getData().length > 1? "D" : "-";
+            String d = packet.getData() == null? "D" : "-";
             
             
             System.out.println("rcv " + packet.getTimeStamp() + s + a + f + d + packet.getSequence() + " " + packet.getLength() + " " + packet.getAcknowledge());

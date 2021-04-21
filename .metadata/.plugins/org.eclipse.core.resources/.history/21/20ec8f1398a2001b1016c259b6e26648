@@ -1,0 +1,72 @@
+package p4;
+
+public class TCPSender {
+		int currentPort;
+		int remotePort;
+		String remoteIP;
+		byte[] data;
+		int mtu;
+		int sws;
+		public int getCurrentPort() {
+			return currentPort;
+		}
+		public void setCurrentPort(int currentPort) {
+			this.currentPort = currentPort;
+		}
+		public int getRemotePort() {
+			return remotePort;
+		}
+		public void setRemotePort(int remotePort) {
+			this.remotePort = remotePort;
+		}
+		public String getRemoteIP() {
+			return remoteIP;
+		}
+		public void setRemoteIP(String remoteIP) {
+			this.remoteIP = remoteIP;
+		}
+		
+		public int getMtu() {
+			return mtu;
+		}
+		public void setMtu(int mtu) {
+			this.mtu = mtu;
+		}
+		public int getSws() {
+			return sws;
+		}
+		public void setSws(int sws) {
+			this.sws = sws;
+		}
+		public TCPSender(int currentPort, int remotePort, String remoteIP, byte[] data, int mtu, int sws) {
+			this.currentPort = currentPort;
+			this.remotePort = remotePort;
+			this.remoteIP = remoteIP;
+			this.data = data;
+			this.mtu = mtu;
+			this.sws = sws;
+		}
+		
+		public void sent() {
+			//slice the file to byte[] and then send it to UDP 
+			// invoke UDP.sent() to send the data
+			
+			
+			
+			
+		}
+		
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

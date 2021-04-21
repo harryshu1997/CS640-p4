@@ -1,7 +1,6 @@
 package p4;
 
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashMap;
@@ -93,28 +92,20 @@ public class TCPSender {
 		
 		
 		
-		public void sent() throws IOException {
+		public void sent() {
 			//slice the file to byte[] and then make a TCPacket --> new UDP instance
 			// invoke UDP.sent() to send the data
 			
 			//example send, not implements TCP algorithm yet
 			// a SYN flag packet
-			byte[] synData = new byte[1];
+			byte[] synData = new byte[0];
 			long timestamp = System.nanoTime();
 			short checksum = 0;
 			TCPacket aPacket = new TCPacket(0,0,timestamp,0,true,false,false,checksum,synData,0);
 			byte[] UDPacket = aPacket.serialize();
-			TCPacket dePacket = aPacket.deserialize(UDPacket, 0, Math.min(UDPacket.length, mtu));
-			UDP udp = new UDP(UDPacket,currentPort,dePacket.getChecksum(),dePacket.getLength(),remotePort, remoteIP);
-			udp.sent();
+			TCPacket dePacket = aPacket.deserialize(UDPacket, 0, mtu);
+			UDP udp = new UDP(UDPacket,currentPort, )
 			
-			
-			//example output: snd 34.335 S - - - 0 0 0
-			String s = dePacket.isSYN()? "S" : "-";
-            String a = dePacket.isACK()? "A" : "-";
-            String f = dePacket.isFIN()? "F" : "-";
-            String d = dePacket.getData().length > 1? "D" : "-";
-			System.out.println("snd " + timestamp + " " + s + a + f + d + dePacket.getSequence() + dePacket.getLength() + dePacket.getAcknowledge());
 			
 			
 		}

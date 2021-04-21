@@ -81,16 +81,6 @@ public class UDP {
 		this.checksum = 0;
 	}
 	
-	/**
-	 * 
-	 * @param data serialized data from TCPacket
-	 * @param sourcePort current port number
-	 * @param checksum TCPacket checksum
-	 * @param length TCPacket data length
-	 * @param destport destination port 
-	 * @param destAddress destination address
-	 */
-	
 	public UDP(byte[] data, int sourcePort, short checksum, int length, int destport, String destAddress) {
 		this.databuf = data;
 		this.destPort = destport;

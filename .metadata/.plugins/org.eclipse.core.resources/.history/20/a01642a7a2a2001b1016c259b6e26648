@@ -109,8 +109,6 @@ public class TCPacket {
 		
 	}
 	
-	
-	
 	public TCPacket(int sequence, int acknowledge, long timeStamp, int length, boolean sYN, boolean fIN, boolean aCK,
 			short checksum, byte[] data, int offset) {
 		this.sequence = sequence;
@@ -190,14 +188,6 @@ public class TCPacket {
 		return bytes;
 	}
 	
-	
-	/**
-	 * 
-	 * @param bytes TCPacket -->byte[]
-	 * @param offset position to start read 
-	 * @param pktlength length to read, no large than byte[].length-offset
-	 * @return
-	 */
 	public TCPacket deserialize(byte[] bytes, int offset, int pktlength) {
 		//System.out.println("data length: " + bytes.length + " pktlength: " + pktlength + " offset: " + offset);
 		ByteBuffer bb = ByteBuffer.wrap(bytes, offset, pktlength);
