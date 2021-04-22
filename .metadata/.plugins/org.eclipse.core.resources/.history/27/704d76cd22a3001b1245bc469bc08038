@@ -134,12 +134,12 @@ public class TCPend{
 			TCPacket deserial = packet.deserialize(serial, 0, serial.length);
 			
 			System.out.println(newPacket.equals(packet));
-			System.out.println("deserial-- " + deserial.toString());
+			System.out.println("length " + deserial.length + " seq " + deserial.sequence + " ack " + deserial.acknowledge + " checksum " + deserial.checksum + " time " + deserial.timeStamp);
 			String s = new String(deserial.getData());
 			String ss = new String(testData);
 			
-			System.out.println("\ndatas " + s + " datass " + ss); //checked is true, all correct
-			
+			System.out.println("datas " + s + " datass " + ss); //checked is true, all correct
+			System.out.println(deserial.toString());
 			
 			
 			

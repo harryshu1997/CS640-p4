@@ -144,19 +144,19 @@ public class TCPacket {
 		bb.putInt(times[0]);
 		bb.putInt(times[1]);
 		if(SYN) {
-			length = modifyBit(length, 2, 1);
+			modifyBit(length, 2, 1);
 		}else {
-			length = modifyBit(length, 2, 0);
+			modifyBit(length, 2, 0);
 		}
 		if(FIN) {
-			length = modifyBit(length, 1, 1);
+			modifyBit(length, 1, 1);
 		}else {
-			length = modifyBit(length, 1, 0);
+			modifyBit(length, 1, 0);
 		}
 		if(ACK) {
-			length = modifyBit(length, 0, 1);
+			modifyBit(length, 0, 1);
 		}else {
-			length = modifyBit(length, 0, 0);
+			modifyBit(length, 0, 0);
 		}
 		bb.putInt(length);
 		int comChecksum = (int) (checksum & 0x0000ffff);
@@ -173,7 +173,7 @@ public class TCPacket {
 			accumulation += ((times[0] >> 16) & 0xffff) + (times[0] & 0xffff);
 			accumulation += ((times[1] >> 16) & 0xffff) + (times[1] & 0xffff);
 			accumulation += ((length >> 16) & 0xffff) + (length & 0xffff);
-			for (int i = 0; i < pktlength / 2; ++i) {
+			for (int i = 0; i < length / 2; ++i) {
                 accumulation += 0xffff & bb.getShort();
             }
             // pad to an even number of shorts
@@ -206,6 +206,7 @@ public class TCPacket {
 		this.acknowledge = bb.getInt();
 		this.timeStamp = bb.getLong();
 		int length = bb.getInt();
+		this.length = length >>> 3;
 		if(((length >>> 2) & 1) != 0) {
 			this.SYN = true;
 		}else {
@@ -221,7 +222,6 @@ public class TCPacket {
 		}else {
 			this.ACK = false;
 		}
-		this.length = length >>> 3;
 		bb.getShort(); // all zeros before checksum
 		this.checksum = bb.getShort();
 		byte[] b = new byte[bb.remaining()];

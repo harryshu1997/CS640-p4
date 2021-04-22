@@ -139,7 +139,7 @@ public class TCPend{
 			String ss = new String(testData);
 			
 			System.out.println("\ndatas " + s + " datass " + ss); //checked is true, all correct
-			
+			System.out.println(deserial.toString());
 			
 			
 			

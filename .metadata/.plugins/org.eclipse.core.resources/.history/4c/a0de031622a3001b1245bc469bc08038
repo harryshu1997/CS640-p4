@@ -143,6 +143,7 @@ public class TCPacket {
 		int[] times = long2doubleInt(timeStamp);
 		bb.putInt(times[0]);
 		bb.putInt(times[1]);
+		System.out.println("yyyyyBinary = " + Integer.toBinaryString(length));
 		if(SYN) {
 			length = modifyBit(length, 2, 1);
 		}else {
@@ -159,6 +160,7 @@ public class TCPacket {
 			length = modifyBit(length, 0, 0);
 		}
 		bb.putInt(length);
+		System.out.println("xxxxBinary = " + Integer.toBinaryString(length));
 		int comChecksum = (int) (checksum & 0x0000ffff);
 		bb.putInt(comChecksum);
 		if(data != null) {
@@ -206,6 +208,7 @@ public class TCPacket {
 		this.acknowledge = bb.getInt();
 		this.timeStamp = bb.getLong();
 		int length = bb.getInt();
+		System.out.println("Binary = " + Integer.toBinaryString(length));
 		if(((length >>> 2) & 1) != 0) {
 			this.SYN = true;
 		}else {
