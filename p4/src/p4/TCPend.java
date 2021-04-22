@@ -107,7 +107,7 @@ public class TCPend{
 //			for(int i=0; i<=total; i+=2) {
 //				System.out.println(i);
 //			}
-//			
+//	
 //			
 			System.out.println("--------");
 			
@@ -116,7 +116,7 @@ public class TCPend{
 			short checksum=8;
 			boolean S=true, F=true,A=true;
 			long timestamp=100000;
-			byte[] testData = Files.readAllBytes(Paths.get("/Users/hmac/Desktop/p4/p4/src/p4/test.txt"));
+			byte[] testData = Files.readAllBytes(Paths.get(System.getProperty("user.dir")+"/src/p4/test.txt"));
 			TCPacket packet = new TCPacket(sequence,ack,timestamp,length,S,F,A,checksum,testData,0);
 			byte[] serial = packet.serialize();
 			
