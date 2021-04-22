@@ -173,7 +173,7 @@ public class TCPacket {
 			accumulation += ((times[0] >> 16) & 0xffff) + (times[0] & 0xffff);
 			accumulation += ((times[1] >> 16) & 0xffff) + (times[1] & 0xffff);
 			accumulation += ((length >> 16) & 0xffff) + (length & 0xffff);
-			for (int i = 0; i < length / 2; ++i) {
+			for (int i = 0; i < pktlength / 2; ++i) {
                 accumulation += 0xffff & bb.getShort();
             }
             // pad to an even number of shorts

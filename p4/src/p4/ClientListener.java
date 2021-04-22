@@ -26,6 +26,8 @@ public class ClientListener implements Runnable {
 				socket.receive(packet);
 				TCPacket recPacket = new TCPacket();
 				recPacket.deserialize(packetData, 0, packetData.length);
+				
+				//add checksum here
 				synchronized (sharedData) {
 					if (recPacket.ACK) { // it's an ACK
 						// calculate new timeOut

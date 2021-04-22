@@ -95,8 +95,8 @@ public class TCPend{
 			 * 
 			 * not yet implement: sws mtu ......
 			 */
-			byte[] bytes = Files.readAllBytes(Paths.get(filename));
-			TCPSender sender = new TCPSender(portNumber, remotePort, remoteIP, bytes, mtu, sws);
+			//byte[] bytes = Files.readAllBytes(Paths.get(filename));
+			//TCPSender sender = new TCPSender(portNumber, remotePort, remoteIP, bytes, mtu, sws);
 			
 			
 			//testing
@@ -113,12 +113,16 @@ public class TCPend{
 			
 			//for testing checksum
 			int sequence =10, ack=2,length=0;
-			short checksum=8;
+			short checksum=0;
 			boolean S=true, F=true,A=true;
 			long timestamp=100000;
 			byte[] testData = Files.readAllBytes(Paths.get(System.getProperty("user.dir")+"/src/p4/test.txt"));
-			TCPacket packet = new TCPacket(sequence,ack,timestamp,length,S,F,A,checksum,testData,0);
+			TCPacket packet = new TCPacket(sequence,ack,timestamp,testData.length,S,F,A,checksum,testData,0);
 			byte[] serial = packet.serialize();
+			TCPacket newPacket = new TCPacket();
+			newPacket.deserialize(serial, 0, serial.length);
+			System.out.println(newPacket.equals(packet));
+			System.out.println(newPacket.toString());
 			
 			
 			TCPacket deserial = packet.deserialize(serial, 0, serial.length);
