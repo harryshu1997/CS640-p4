@@ -99,12 +99,12 @@ public class TCPSender {
 			} else {// cannot slice perfectly
 				int pieces = data.length / (mtu - 24);
 				int jump = mtu - 24;
-				for (int i = 0; i < pieces; i ++) {
-					byte[] slice = Arrays.copyOfRange(data, i*jump, i*jump + jump);
+				for (int i = 0; i < pieces; i += jump) {
+					byte[] slice = Arrays.copyOfRange(data, i, i + jump);
 					dataSlices.add(slice);
 				}
 				int last = pieces * jump;
-				byte[] lastslice = Arrays.copyOfRange(data, last, data.length); 
+				byte[] lastslice = Arrays.copyOfRange(data, last, data.length); // not sure if it is length of length +1
 				dataSlices.add(lastslice);
 			}
 			System.out.println(data.length);

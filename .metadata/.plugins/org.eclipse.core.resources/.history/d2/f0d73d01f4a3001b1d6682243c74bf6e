@@ -104,7 +104,7 @@ public class TCPSender {
 					dataSlices.add(slice);
 				}
 				int last = pieces * jump;
-				byte[] lastslice = Arrays.copyOfRange(data, last, data.length); 
+				byte[] lastslice = Arrays.copyOfRange(data, last, data.length); // not sure if it is length of length +1
 				dataSlices.add(lastslice);
 			}
 			System.out.println(data.length);
