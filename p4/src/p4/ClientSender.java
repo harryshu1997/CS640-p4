@@ -19,14 +19,8 @@ public class ClientSender implements Runnable{
 		synchronized(sharedData) {
 			//send a SYN packet
 			TCPacket SYN = new TCPacket(sharedData.seq, 0, System.nanoTime(), TCPSender.DUMMY.length, true, false, false, (short)0, TCPSender.DUMMY, 0);
-			byte[] SYNData = SYN.serialize();
-			DatagramPacket SYNPacket = new DatagramPacket(SYNData, SYNData.length, sharedData.address);
-			try {
-				sharedData.socket.send(SYNPacket);
-			} catch (IOException e) {
-				System.out.println("Failed to send packet using socket");
-				e.printStackTrace();
-			}
+			sharedData.sendPacket(SYN);
+			sharedData.printInfo(sharedData.SENT, SYN, SYN.getTimeStamp());
 			BufferItem SYNBuffer = new BufferItem(SYN);
 			sharedData.sw.offer(SYNBuffer);
 			sharedData.seq += SYN.getLength();
@@ -41,17 +35,12 @@ public class ClientSender implements Runnable{
 			for(byte[] data: dataSlices) {
 				if(sharedData.sws > 0) {
 					TCPacket dataPacket = new TCPacket(sharedData.seq, 0, System.nanoTime(), data.length, false, false, false, (short)0, data, 0);
-					byte[] byteData = dataPacket.serialize();
-					DatagramPacket datagramPacket = new DatagramPacket(byteData, byteData.length, sharedData.address);
-					try {
-						sharedData.socket.send(datagramPacket);
-					} catch (IOException e) {
-						System.out.println("Failed to send packet using socket");
-						e.printStackTrace();
-					}
+					sharedData.sendPacket(dataPacket);
+					sharedData.printInfo(sharedData.SENT, dataPacket, dataPacket.getTimeStamp());
 					BufferItem dataBuffer = new BufferItem(dataPacket);
 					sharedData.sw.offer(dataBuffer);
 					sharedData.seq += dataPacket.getLength();
+					sharedData.dataSent += dataPacket.getLength();
 					sharedData.sws--;
 				}else {
 					try {
@@ -64,14 +53,8 @@ public class ClientSender implements Runnable{
 			}
 			//send a FIN and end itself no matter what
 			TCPacket FIN = new TCPacket(sharedData.seq, 0, System.nanoTime(), TCPSender.DUMMY.length, false, true, false, (short)0, TCPSender.DUMMY, 0);
-			byte[] FINData = FIN.serialize();
-			DatagramPacket FINPacket = new DatagramPacket(FINData, FINData.length, sharedData.address);
-			try {
-				sharedData.socket.send(FINPacket);
-			} catch (IOException e) {
-				System.out.println("Failed to send packet using socket");
-				e.printStackTrace();
-			}
+			sharedData.sendPacket(FIN);
+			sharedData.printInfo(sharedData.SENT, FIN, FIN.getTimeStamp());
 			BufferItem FINBuffer = new BufferItem(FIN);
 			sharedData.sw.offer(FINBuffer);
 			sharedData.seq += FIN.getLength();

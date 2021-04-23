@@ -1,6 +1,7 @@
 package p4;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class TCPSender {
-	public static final byte[] DUMMY = {0x1};
+	public static final byte[] DUMMY = { 0x1 };
 	int currentPort;
 	int remotePort;
 	String remoteIP;
@@ -25,6 +26,7 @@ public class TCPSender {
 	double timeOut = 5.0;
 	Queue<BufferItem> sw;
 	DatagramSocket socket;
+	String fileName;
 
 	public int getCurrentPort() {
 		return currentPort;
@@ -66,13 +68,14 @@ public class TCPSender {
 		this.sws = sws;
 	}
 
-	public TCPSender(int currentPort, int remotePort, String remoteIP, byte[] data, int mtu, int sws) {
+	public TCPSender(int currentPort, int remotePort, String remoteIP, byte[] data, int mtu, int sws, String fileName) {
 		this.currentPort = currentPort;
 		this.remotePort = remotePort;
 		this.remoteIP = remoteIP;
 		this.data = data;
 		this.mtu = mtu;
 		this.sws = sws;
+		this.fileName = fileName;
 		dataSlices = new ArrayList<byte[]>();
 		sw = new LinkedList<BufferItem>();
 		try {
@@ -104,19 +107,35 @@ public class TCPSender {
 				byte[] lastslice = Arrays.copyOfRange(data, last, data.length); // not sure if it is length of length +1
 				dataSlices.add(lastslice);
 			}
+			System.out.println(data.length);
+			for(byte[] slice:dataSlices) {
+				System.out.println(slice);
+				System.out.println(slice.length);
+			}
 		}
-		InetSocketAddress address = new InetSocketAddress(remoteIP, remotePort);
-		SharedData sharedData = new SharedData(socket, sw, address, timeOut, seq, sws, mtu);
-		ClientSender sender = new ClientSender(sharedData, dataSlices);
-		ClientListener listener = new ClientListener(sharedData);
-		ClientTimer timer = new ClientTimer(sharedData);
-		new Thread(sender).start();
-		new Thread(listener).start();
-		new Thread(timer).start();
+		if (data != null) {
+			System.out.println("Client booted");
+			InetSocketAddress address = new InetSocketAddress(remoteIP, remotePort);
+			SharedData sharedData = new SharedData(socket, sw, address, timeOut, seq, sws, mtu);
+			ClientSender sender = new ClientSender(sharedData, dataSlices);
+			ClientListener listener = new ClientListener(sharedData);
+			ClientTimer timer = new ClientTimer(sharedData);
+			new Thread(sender).start();
+			new Thread(listener).start();
+			new Thread(timer).start();
+		} else {
+			System.out.println("Server booted");
+			SharedData sharedData = new SharedData(socket, sw, null, timeOut, seq, sws, mtu);
+			ServerListener listener = new ServerListener(sharedData, fileName);
+			ClientTimer timer = new ClientTimer(sharedData);
+			new Thread(listener).start();
+			new Thread(timer).start();
+		}
 	}
+	
 
 // not needed any more
-	
+
 //	public void sent(int seq, int ack, boolean SYN, boolean ACK, boolean FIN, byte[] data) throws IOException {
 //		// slice the file to byte[] and then make a TCPacket --> new UDP instance
 //		// invoke UDP.sent() to send the data

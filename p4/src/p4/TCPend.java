@@ -95,13 +95,11 @@ public class TCPend{
 			 * 
 			 * not yet implement: sws mtu ......
 			 */
-			//byte[] bytes = Files.readAllBytes(Paths.get(filename));
+			byte[] bytes = Files.readAllBytes(Paths.get(filename));
 			//TCPSender sender = new TCPSender(portNumber, remotePort, remoteIP, bytes, mtu, sws);
 			
 			
 			//testing
-			
-			System.out.println("----------");
 //			int total = 6;
 //			int window = 2;
 //			for(int i=0; i<=total; i+=2) {
@@ -109,36 +107,36 @@ public class TCPend{
 //			}
 //	
 //			
-			System.out.println("--------");
 			
 			//for testing checksum
-			int sequence =10, ack=2,length=0;
-			short checksum=0;
-			boolean S=true, F=true,A=true;
-			long timestamp=100000;
-			byte[] testData = Files.readAllBytes(Paths.get(System.getProperty("user.dir")+"/src/p4/test.txt"));
-			TCPacket packet = new TCPacket(sequence,ack,timestamp,testData.length,S,F,A,checksum,testData,0);
-			
-			
-			
-			byte[] serial = packet.serialize();
-			TCPacket newPacket = new TCPacket();
-			newPacket.deserialize(serial, 0, serial.length);
-			
-			
-			
-			System.out.println("equals--- " + newPacket.equals(packet));
-			System.out.println("newpacket-- " + newPacket.toString());
-			
-			System.out.println("--------");
-			TCPacket deserial = packet.deserialize(serial, 0, serial.length);
-			
-			System.out.println(newPacket.equals(packet));
-			System.out.println("deserial-- " + deserial.toString());
-			String s = new String(deserial.getData());
-			String ss = new String(testData);
-			
-			System.out.println("\ndatas " + s + " datass " + ss); //checked is true, all correct
+//			int sequence =10, ack=2,length=0;
+//			short checksum=0;
+//			boolean S=true, F=true,A=true;
+//			long timestamp=100000;
+			//byte[] testData = Files.readAllBytes(Paths.get(System.getProperty("user.dir")+"/src/p4/test.txt"));
+			TCPSender sender = new TCPSender(portNumber, remotePort, remoteIP, bytes, mtu, sws, null);
+//			TCPacket packet = new TCPacket(sequence,ack,timestamp,testData.length,S,F,A,checksum,testData,0);
+//			
+//			
+//			
+//			byte[] serial = packet.serialize();
+//			TCPacket newPacket = new TCPacket();
+//			newPacket.deserialize(serial, 0, serial.length);
+//			
+//			
+//			
+//			System.out.println("equals--- " + newPacket.equals(packet));
+//			System.out.println("newpacket-- " + newPacket.toString());
+//			
+//			System.out.println("--------");
+//			TCPacket deserial = packet.deserialize(serial, 0, serial.length);
+//			
+//			System.out.println(newPacket.equals(packet));
+//			System.out.println("deserial-- " + deserial.toString());
+//			String s = new String(deserial.getData());
+//			String ss = new String(testData);
+//			
+//			System.out.println("\ndatas " + s + " datass " + ss); //checked is true, all correct
 			
 			
 			
@@ -171,6 +169,8 @@ public class TCPend{
 			}
 			
 			String filename = args[9];
+			
+			TCPSender receiver = new TCPSender(portNumber, 0, null, null, mtu, sws, filename);
 			
 			//do the TCP transporting (Receiving side)
 			//create a UDP for receiving first then get the data

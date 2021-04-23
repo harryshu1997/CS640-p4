@@ -17,6 +17,7 @@ public class ClientTimer implements Runnable{
 			try {
 				//check every 0.1 s
 				Thread.sleep(100);
+				//System.out.println("timer running");
 				long curTime = System.nanoTime();
 				synchronized(sharedData) {
 					for(BufferItem bufferItem: sharedData.sw) {
@@ -24,19 +25,17 @@ public class ClientTimer implements Runnable{
 							if(bufferItem.getRetransmitTime() >= 16) {
 								//maximum number of transmissions reached
 								System.out.println("Error: Reaching maximum retransmission time");
+								System.out.println("This may happen due to dropped ACK for receiver's FIN");
+								sharedData.printStat();
 								System.exit(1);
 							}
 							//retransmit
 							TCPacket updated = bufferItem.getPacket();
 							updated.setChecksum((short)0);
 							updated.setTimeStamp(System.nanoTime());
-							byte[] updatedData = updated.serialize();
-							DatagramPacket updatedPacket = new DatagramPacket(updatedData, updatedData.length, sharedData.address);
-							try {
-								sharedData.socket.send(updatedPacket);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
+							sharedData.retransmission++;
+							sharedData.sendPacket(updated);
+							sharedData.printInfo(sharedData.SENT, updated, updated.getTimeStamp());
 							bufferItem.setPacket(updated);
 							bufferItem.incRetransmitTime();
 						}
