@@ -5,9 +5,18 @@ JC = javac
 	$(JC) $(JFLAGS) $*.java
 
 CLASSES = \
-	TCPend.java \
-	Client.java \
-	Server.java 
+	BufferItem.java \
+	ClientListener.java \
+	ClientSender.java \
+	ClientTimer.java \
+	ServerListener.java \
+	SharedData.java \
+	TCPacket.java \
+	TCPReceiver.java \
+	TCPSender.java \
+	UDP.java \
+	TCPend.java 
+
         
 
 default: classes

@@ -4,18 +4,19 @@ JC = javac
 .java.class:
 	$(JC) $(JFLAGS) $*.java
 
+# need to remove all package declaration (packet p4) before make
 CLASSES = \
-	TCPend.java \
+	UDP.java \
+	TCPacket.java 
 	BufferItem.java \
+	SharedData.java \
 	ClientListener.java \
 	ClientSender.java \
 	ClientTimer.java \
 	ServerListener.java \
-	SharedData.java \
-	TCPacket.java \
 	TCPReceiver.java \
 	TCPSender.java \
-	UDP.java
+	TCPend.java 
 
         
 
